@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+dependencies/.DS_Store
+.DS_Store
