@@ -1,6 +1,3 @@
-Sample code project: Audio Unit Examples (AudioUnit Effect, Generator, Instrument, MIDI Processor and Offline)
-Version: 2.0
-
 IMPORTANT:  This Apple software is supplied to you by Apple
 Inc. ("Apple") in consideration of your agreement to the following
 terms, and your use, installation, modification or redistribution of
