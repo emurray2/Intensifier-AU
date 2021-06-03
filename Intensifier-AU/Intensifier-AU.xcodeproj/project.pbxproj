@@ -6,9 +6,18 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		07B7484D26687536005A4AFD /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07B7484C26687536005A4AFD /* AudioToolbox.framework */; };
+		07B7484F26687548005A4AFD /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07B7484E26687548005A4AFD /* AudioUnit.framework */; };
+		07B7485126687551005A4AFD /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07B7485026687551005A4AFD /* CoreServices.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		07B74842266862BF005A4AFD /* Intensifier-AU.component */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Intensifier-AU.component"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07B74845266862BF005A4AFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07B7484C26687536005A4AFD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		07B7484E26687548005A4AFD /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		07B7485026687551005A4AFD /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -16,6 +25,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07B7484D26687536005A4AFD /* AudioToolbox.framework in Frameworks */,
+				07B7485126687551005A4AFD /* CoreServices.framework in Frameworks */,
+				07B7484F26687548005A4AFD /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27,6 +39,7 @@
 			children = (
 				07B74844266862BF005A4AFD /* Intensifier-AU */,
 				07B74843266862BF005A4AFD /* Products */,
+				07B7484B26687536005A4AFD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -44,6 +57,16 @@
 				07B74845266862BF005A4AFD /* Info.plist */,
 			);
 			path = "Intensifier-AU";
+			sourceTree = "<group>";
+		};
+		07B7484B26687536005A4AFD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07B7485026687551005A4AFD /* CoreServices.framework */,
+				07B7484E26687548005A4AFD /* AudioUnit.framework */,
+				07B7484C26687536005A4AFD /* AudioToolbox.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,12 +253,15 @@
 		07B74849266862BF005A4AFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.0;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Intensifier-AU/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.auraaudio.Intensifier-AU";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = component;
 			};
@@ -244,12 +270,15 @@
 		07B7484A266862BF005A4AFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.0;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Intensifier-AU/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.auraaudio.Intensifier-AU";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = component;
 			};

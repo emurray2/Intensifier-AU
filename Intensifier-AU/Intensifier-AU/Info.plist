@@ -2,10 +2,37 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AudioComponents</key>
+	<array>
+		<dict>
+			<key>description</key>
+			<string>Intensify your sound!</string>
+			<key>factoryFunction</key>
+			<string>IntensifierUnitFactory</string>
+			<key>manufacturer</key>
+			<string>Aura</string>
+			<key>name</key>
+			<string>Aura Audio: Intensifier</string>
+			<key>sandboxSafe</key>
+			<true/>
+			<key>subtype</key>
+			<string>intf</string>
+			<key>tags</key>
+			<array>
+				<string>Effects</string>
+				<string>Dynamics</string>
+				<string>Guitar</string>
+			</array>
+			<key>type</key>
+			<string>aufx</string>
+			<key>version</key>
+			<real>65536</real>
+		</dict>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
+	<string>Intensifier</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -17,8 +44,8 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>NSPrincipalClass</key>
-	<string></string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
 </dict>
 </plist>
