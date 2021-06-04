@@ -10,9 +10,9 @@
 			<key>factoryFunction</key>
 			<string>IntensifierUnitFactory</string>
 			<key>manufacturer</key>
-			<string>Aura</string>
+			<string>Auem</string>
 			<key>name</key>
-			<string>Aura Audio: Intensifier</string>
+			<string>Aura Audio LLC: Intensifier</string>
 			<key>sandboxSafe</key>
 			<true/>
 			<key>subtype</key>
@@ -31,21 +31,29 @@
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Intensifier</string>
 	<key>CFBundleExecutable</key>
 	<string>Intensifier</string>
+	<key>CFBundleIconFile</key>
+	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>io.auraaudio.Intensifier</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<string>Intensifier</string>
 	<key>CFBundlePackageType</key>
-	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<string>1.0.0</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright (C) 2021 Aura Audio LLC</string>
 </dict>
 </plist>
