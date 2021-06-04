@@ -1,3 +1,4 @@
+#include "IntensifierUnit.h"
 /*
  The objects marked Cyclone were derived from the Max/MSP Cyclone library source code.
  The license for this code can be found below:
@@ -32,22 +33,6 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 // MARK: BEGIN Cyclone RMS
-#define AVERAGE_STACK    44100 //stack value
-#define AVERAGE_MAXBUF  882000 //max buffer size
-#define AVERAGE_DEFNPOINTS  100  /* CHECKME */
-typedef struct {
-    float x_accum; // sum
-    float x_calib; // accumulator calibrator
-    float *x_buf; // buffer pointer
-    float x_stack[AVERAGE_STACK]; // buffer
-    int x_alloc; // if x_buf is allocated or stack
-    unsigned int x_count; // number of samples seen so far
-    unsigned int x_npoints; // number of samples for moving average
-    unsigned int x_sz; // allocated size for x_buf
-    unsigned int x_bufrd; // readhead for buffer
-    unsigned int x_max; // max size of buffer as specified by argument
-} rmsaverage;
-
 void rmsaverage_zerobuf(rmsaverage *x) {
     unsigned int i;
     for (i=0; i < x->x_sz; i++) {
@@ -166,14 +151,7 @@ int rmsaverage_destroy(rmsaverage **x) {
     return 1;
 }
 // MARK: END Cyclone RMS
-
 // MARK: BEGIN Cyclone Slide
-typedef struct {
-    int x_slide_up;
-    int x_slide_down;
-    float x_last;
-} slide;
-
 int slide_compute(slide *x, float *inSample, float *outSample) {
     float last = x->x_last;
     float f = *inSample;
@@ -241,7 +219,6 @@ int slide_destroy(slide **x) {
     return 1;
 }
 // MARK: END Cyclone Slide
-#include "IntensifierUnit.h"
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 AUDIOCOMPONENT_ENTRY(AUBaseFactory, IntensifierUnit)
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
