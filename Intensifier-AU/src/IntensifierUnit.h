@@ -129,7 +129,21 @@ static const int kPreset_Default = kPreset_Subtle;
 class IntensifierUnit : public AUEffectBase {
 
 public:
+    rmsaverage *leftRMSAverage1;
+    rmsaverage *rightRMSAverage1;
+    rmsaverage *leftRMSAverage2;
+    rmsaverage *rightRMSAverage2;
+    slide *leftAttackSlideUp;
+    slide *rightAttackSlideUp;
+    slide *leftAttackSlideDown;
+    slide *rightAttackSlideDown;
+    slide *leftReleaseSlideDown;
+    slide *rightReleaseSlideDown;
 	IntensifierUnit (AudioUnit component);
+
+    virtual OSStatus Initialize();
+
+    virtual void Cleanup();
 	
 #if AU_DEBUG_DISPATCHER
 	virtual ~IntensifierUnit () {delete mDebugDispatcher;}

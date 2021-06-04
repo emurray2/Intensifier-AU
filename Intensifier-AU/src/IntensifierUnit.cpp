@@ -259,6 +259,51 @@ IntensifierUnit::IntensifierUnit (AudioUnit component) : AUEffectBase (component
         mDebugDispatcher = new AUDebugDispatcher (this);
     #endif
 }
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    IntensifierUnit::Initialize()
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+OSStatus IntensifierUnit::Initialize()
+{
+    OSStatus result = AUEffectBase::Initialize();
+    rmsaverage_create(&leftRMSAverage1);
+    rmsaverage_init(leftRMSAverage1, 441);
+    rmsaverage_create(&rightRMSAverage1);
+    rmsaverage_init(rightRMSAverage1, 441);
+    rmsaverage_create(&leftRMSAverage2);
+    rmsaverage_init(leftRMSAverage2, 882);
+    rmsaverage_create(&rightRMSAverage2);
+    rmsaverage_init(rightRMSAverage2, 882);
+    slide_create(&leftAttackSlideUp);
+    slide_init(leftAttackSlideUp, 882, 0);
+    slide_create(&rightAttackSlideUp);
+    slide_init(rightAttackSlideUp, 882, 0);
+    slide_create(&leftAttackSlideDown);
+    slide_init(leftAttackSlideDown, 0, 882);
+    slide_create(&rightAttackSlideDown);
+    slide_init(rightAttackSlideDown, 0, 882);
+    slide_create(&leftReleaseSlideDown);
+    slide_init(leftReleaseSlideDown, 0, 44100);
+    slide_create(&rightReleaseSlideDown);
+    slide_init(rightReleaseSlideDown, 0, 44100);
+    return result;
+}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//    IntensifierUnit::Cleanup()
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void IntensifierUnit::Cleanup()
+{
+    AUEffectBase::Cleanup();
+    rmsaverage_destroy(&leftRMSAverage1);
+    rmsaverage_destroy(&rightRMSAverage1);
+    rmsaverage_destroy(&leftRMSAverage2);
+    rmsaverage_destroy(&rightRMSAverage2);
+    slide_destroy(&leftAttackSlideUp);
+    slide_destroy(&rightAttackSlideUp);
+    slide_destroy(&leftAttackSlideDown);
+    slide_destroy(&rightAttackSlideDown);
+    slide_destroy(&leftReleaseSlideDown);
+    slide_destroy(&rightReleaseSlideDown);
+}
 #pragma mark ____Parameters
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //    IntensifierUnit::GetParameterInfo
