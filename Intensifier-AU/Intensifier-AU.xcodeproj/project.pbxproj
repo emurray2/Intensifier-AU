@@ -42,6 +42,10 @@
 		070F3E8B26698CD60008B076 /* IntensifierUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 070F3E8726698CD50008B076 /* IntensifierUnit.h */; };
 		070F3E8C26698CD60008B076 /* IntensifierUnit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 070F3E8826698CD60008B076 /* IntensifierUnit.cpp */; };
 		070F3E8D26698E890008B076 /* IntensifierUnit_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 070F3E64266987D60008B076 /* IntensifierUnit_Prefix.pch */; };
+		078A9F5F2669F63D009E561E /* AdjustableDelayLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078A9F5A2669F63D009E561E /* AdjustableDelayLine.cpp */; };
+		078A9F612669F63D009E561E /* AdjustableDelayLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 078A9F5C2669F63D009E561E /* AdjustableDelayLine.h */; };
+		078A9F622669F63D009E561E /* StereoDelay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078A9F5D2669F63D009E561E /* StereoDelay.cpp */; };
+		078A9F632669F63D009E561E /* StereoDelay.h in Headers */ = {isa = PBXBuildFile; fileRef = 078A9F5E2669F63D009E561E /* StereoDelay.h */; };
 		07B7484D26687536005A4AFD /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07B7484C26687536005A4AFD /* AudioToolbox.framework */; };
 		07B7484F26687548005A4AFD /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07B7484E26687548005A4AFD /* AudioUnit.framework */; };
 		07B7485126687551005A4AFD /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07B7485026687551005A4AFD /* CoreServices.framework */; };
@@ -73,6 +77,11 @@
 		070F3E8626698CD50008B076 /* IntensifierUnit.exp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.exports; path = IntensifierUnit.exp; sourceTree = "<group>"; };
 		070F3E8726698CD50008B076 /* IntensifierUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntensifierUnit.h; sourceTree = "<group>"; };
 		070F3E8826698CD60008B076 /* IntensifierUnit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IntensifierUnit.cpp; sourceTree = "<group>"; };
+		078A9F5A2669F63D009E561E /* AdjustableDelayLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdjustableDelayLine.cpp; sourceTree = "<group>"; };
+		078A9F5B2669F63D009E561E /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		078A9F5C2669F63D009E561E /* AdjustableDelayLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableDelayLine.h; sourceTree = "<group>"; };
+		078A9F5D2669F63D009E561E /* StereoDelay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StereoDelay.cpp; sourceTree = "<group>"; };
+		078A9F5E2669F63D009E561E /* StereoDelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StereoDelay.h; sourceTree = "<group>"; };
 		07B74842266862BF005A4AFD /* Intensifier.component */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Intensifier.component; sourceTree = BUILT_PRODUCTS_DIR; };
 		07B74845266862BF005A4AFD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07B7484C26687536005A4AFD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -182,11 +191,25 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		078A9F592669F63D009E561E /* DunneAudioKit */ = {
+			isa = PBXGroup;
+			children = (
+				078A9F5A2669F63D009E561E /* AdjustableDelayLine.cpp */,
+				078A9F5B2669F63D009E561E /* LICENSE */,
+				078A9F5C2669F63D009E561E /* AdjustableDelayLine.h */,
+				078A9F5D2669F63D009E561E /* StereoDelay.cpp */,
+				078A9F5E2669F63D009E561E /* StereoDelay.h */,
+			);
+			name = DunneAudioKit;
+			path = dependencies/DunneAudioKit;
+			sourceTree = "<group>";
+		};
 		07B74839266862BF005A4AFD = {
 			isa = PBXGroup;
 			children = (
 				070F3E64266987D60008B076 /* IntensifierUnit_Prefix.pch */,
 				070F3E8626698CD50008B076 /* IntensifierUnit.exp */,
+				078A9F592669F63D009E561E /* DunneAudioKit */,
 				070F3E632669879B0008B076 /* src */,
 				07B7485326689817005A4AFD /* AUPublic */,
 				07B7488026689817005A4AFD /* PublicUtility */,
@@ -361,6 +384,7 @@
 				070F3E8426698BD40008B076 /* AUBase.h in Headers */,
 				070F3E8326698BCA0008B076 /* AUInputElement.h in Headers */,
 				070F3E8226698BC20008B076 /* AUOutputElement.h in Headers */,
+				078A9F612669F63D009E561E /* AdjustableDelayLine.h in Headers */,
 				070F3E8126698BBA0008B076 /* AUPlugInDispatch.h in Headers */,
 				070F3E8026698BB50008B076 /* AUScopeElement.h in Headers */,
 				070F3E7F26698BAD0008B076 /* ComponentBase.h in Headers */,
@@ -374,6 +398,7 @@
 				070F3E7726698B5D0008B076 /* CAAutoDisposer.h in Headers */,
 				070F3E7626698B4F0008B076 /* CABufferList.h in Headers */,
 				070F3E7526698B470008B076 /* CAByteOrder.h in Headers */,
+				078A9F632669F63D009E561E /* StereoDelay.h in Headers */,
 				070F3E7426698B340008B076 /* CADebugger.h in Headers */,
 				070F3E7326698B280008B076 /* CADebugMacros.h in Headers */,
 				070F3E7226698B1F0008B076 /* CADebugPrintf.h in Headers */,
@@ -463,12 +488,14 @@
 				07B748B526689817005A4AFD /* AUBase.cpp in Sources */,
 				07B748BF26689817005A4AFD /* AUInputElement.cpp in Sources */,
 				07B748BA26689817005A4AFD /* AUOutputElement.cpp in Sources */,
+				078A9F5F2669F63D009E561E /* AdjustableDelayLine.cpp in Sources */,
 				07B748BB26689817005A4AFD /* AUPlugInDispatch.cpp in Sources */,
 				07B748B326689817005A4AFD /* AUScopeElement.cpp in Sources */,
 				07B748B226689817005A4AFD /* ComponentBase.cpp in Sources */,
 				07B748C526689817005A4AFD /* AUEffectBase.cpp in Sources */,
 				07B748C926689817005A4AFD /* AUBaseHelper.cpp in Sources */,
 				07B748CB26689817005A4AFD /* AUBuffer.cpp in Sources */,
+				078A9F622669F63D009E561E /* StereoDelay.cpp in Sources */,
 				07B748E026689817005A4AFD /* CAAudioChannelLayout.cpp in Sources */,
 				07B748F126689817005A4AFD /* CABufferList.cpp in Sources */,
 				07B748F326689817005A4AFD /* CADebugger.cpp in Sources */,

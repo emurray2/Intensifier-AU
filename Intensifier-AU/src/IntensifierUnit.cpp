@@ -1,4 +1,5 @@
 #include "IntensifierUnit.h"
+#include "StereoDelay.h"
 /*
  The objects marked Cyclone were derived from the Max/MSP Cyclone library source code.
  The license for this code can be found below:
@@ -512,6 +513,105 @@ IntensifierUnit::IntensifierUnitKernel::IntensifierUnitKernel (AUEffectBase *inA
     mSamplesProcessed (0)
 {
     mSampleFrequency = GetSampleRate ();
+}
+float IntensifierUnit::IntensifierUnitKernel::convertMsToSamples(float fMilleseconds, float fSampleRate)
+{
+    return fMilleseconds * (fSampleRate / 1000.0);
+}
+
+float IntensifierUnit::IntensifierUnitKernel::convertMsToSeconds(float fMilleseconds) {
+    return fMilleseconds / 1000;
+}
+
+float IntensifierUnit::IntensifierUnitKernel::convertSecondsToCutoffFrequency(float fSeconds) {
+    return 1.0 / (2 * M_PI * fSeconds);
+}
+
+int IntensifierUnit::IntensifierUnitKernel::compute_attackLR(Float32 *inChannel,
+                     Float32 *outChannel,
+                     rmsaverage *average,
+                     slide *slideUp,
+                     slide *slideDown)
+{
+
+    float *tmpRMSOut = NULL;
+
+    rmsaverage_compute(average, inChannel, tmpRMSOut);
+
+    float *tmpMixOut = NULL;
+
+    *tmpMixOut = *tmpRMSOut * 0.5;
+
+    // Copy this signal for later comparison
+    float attackMixCopy = *tmpMixOut;
+
+    float *tmpSlideOut = NULL;
+
+    slide_compute(slideUp, tmpMixOut, tmpSlideOut);
+
+    float slideMixCopy = *tmpSlideOut;
+
+    // MARK: BEGIN Logic
+
+    float slideToCompare = slideMixCopy + 0.0; // FIXME: later replace this with attack sensitivity
+
+    float comparator1 = 0.0;
+
+    if (attackMixCopy >= slideToCompare)
+        comparator1 = 1.0;
+    else
+        comparator1 = 0.0;
+
+    float subtractedMix1 = attackMixCopy - slideMixCopy;
+
+    *outChannel = comparator1 * subtractedMix1;
+
+    // MARK: END Logic
+    slide_compute(slideDown, outChannel, outChannel);
+    return 1;
+}
+
+int IntensifierUnit::IntensifierUnitKernel::compute_releaseLR(float *inChannel,
+                     float *outChannel,
+                     rmsaverage *average,
+                     slide *slideDown)
+{
+
+    float *tmpRMSOut = NULL;
+
+    rmsaverage_compute(average, inChannel, tmpRMSOut);
+
+    float *tmpMixOut = NULL;
+
+    // Mix Left and Right Channel (on left channel) and half them
+    *tmpMixOut = *tmpRMSOut * 0.5;
+
+    // Copy this signal for later comparison
+    float releaseMixCopy = *tmpMixOut;
+
+    float *tmpSlideOut = NULL;
+
+    slide_compute(slideDown, tmpMixOut, tmpSlideOut);
+
+    float slideMixCopy = *tmpSlideOut;
+
+    // MARK: BEGIN Logic
+
+    float slideToCompare = slideMixCopy + 0.0; // FIXME: later replace this with release sensitivity
+
+    float comparator1 = 0.0;
+
+    if (releaseMixCopy <= slideToCompare)
+        comparator1 = 1.0;
+    else
+        comparator1 = 0.0;
+
+    float subtractedMix1 = slideMixCopy - releaseMixCopy;
+
+    *outChannel = comparator1 * subtractedMix1;
+
+    // MARK: END Logic
+    return 1;
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //    IntensifierUnit::IntensifierUnitKernel::Reset()

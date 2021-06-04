@@ -209,6 +209,18 @@ protected:
 			enum	{sampleLimit = (int) 10E6};	// To keep the value of mSamplesProcessed within a 
 												//   reasonable limit. 10E6 is equivalent to the number   
 												//   of samples in 100 seconds of 96 kHz audio.
+            float convertMsToSamples(float fMilleseconds, float fSampleRate);
+            float convertMsToSeconds(float fMilleseconds);
+            float convertSecondsToCutoffFrequency(float fSeconds);
+            int compute_attackLR(Float32 *inChannel,
+                                 Float32 *outChannel,
+                                 rmsaverage *average,
+                                 slide *slideUp,
+                                 slide *slideDown);
+            int compute_releaseLR(Float32 *inChannel,
+                                 Float32 *outChannel,
+                                 rmsaverage *average,
+                                 slide *slideDown);
 	};
 };
 #endif
