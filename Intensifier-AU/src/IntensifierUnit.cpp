@@ -1,3 +1,246 @@
+/*
+ The objects marked Cyclone were derived from the Max/MSP Cyclone library source code.
+ The license for this code can be found below:
+
+ --------------------------------------------------------------------------------------------------------------
+ LICENSE.txt
+ --------------------------------------------------------------------------------------------------------------
+
+ Copyright (c) <2003-2020>, <Krzysztof Czaja, Fred Jan Kraan, Alexandre Porres, Derek Kwan, Matt Barber and others>
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+     * Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+     * Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+     * Neither the name of the <organization> nor the
+       names of its contributors may be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+// MARK: BEGIN Cyclone RMS
+#define AVERAGE_STACK    44100 //stack value
+#define AVERAGE_MAXBUF  882000 //max buffer size
+#define AVERAGE_DEFNPOINTS  100  /* CHECKME */
+typedef struct {
+    float x_accum; // sum
+    float x_calib; // accumulator calibrator
+    float *x_buf; // buffer pointer
+    float x_stack[AVERAGE_STACK]; // buffer
+    int x_alloc; // if x_buf is allocated or stack
+    unsigned int x_count; // number of samples seen so far
+    unsigned int x_npoints; // number of samples for moving average
+    unsigned int x_sz; // allocated size for x_buf
+    unsigned int x_bufrd; // readhead for buffer
+    unsigned int x_max; // max size of buffer as specified by argument
+} rmsaverage;
+
+void rmsaverage_zerobuf(rmsaverage *x) {
+    unsigned int i;
+    for (i=0; i < x->x_sz; i++) {
+        x->x_buf[i] = 0.;
+    };
+}
+
+void rmsaverage_reset(rmsaverage *x) {
+    // clear buffer and reset everything to 0
+    x->x_count = 0;
+    x->x_accum = 0;
+    x->x_bufrd = 0;
+    rmsaverage_zerobuf(x);
+}
+
+void rmsaverage_sz(rmsaverage *x, unsigned int newsz) {
+    // helper function to deal with allocation issues if needed
+    int alloc = x->x_alloc;
+    unsigned int cursz = x->x_sz; //current size
+    // requested size
+    if (newsz < 0) {
+        newsz = 0;
+    } else if (newsz > AVERAGE_MAXBUF) {
+        newsz = AVERAGE_MAXBUF;
+    };
+    if (!alloc && newsz > AVERAGE_STACK) {
+        x->x_buf = (float *)malloc(sizeof(float) * newsz);
+        x->x_alloc = 1;
+        x->x_sz = newsz;
+    } else if (alloc && newsz > cursz) {
+        x->x_buf = (float *)realloc(x->x_buf, sizeof(float) * newsz);
+        x->x_sz = newsz;
+    } else if (alloc && newsz < AVERAGE_STACK) {
+        free(x->x_buf);
+        x->x_sz = AVERAGE_STACK;
+        x->x_buf = x->x_stack;
+        x->x_alloc = 0;
+    };
+    rmsaverage_reset(x);
+}
+
+double rmsaverage_rmssum(float input, float accum, int add) {
+    if (add) {
+        accum += (input * input);
+    } else {
+        accum -= (input * input);
+    };
+    return (accum);
+}
+
+int rmsaverage_compute(rmsaverage *x, float *inSample, float *outSample) {
+    unsigned int npoints = x->x_npoints;
+    float result; // eventual result
+    float input = *inSample;
+    if (npoints > 1) {
+        unsigned int bufrd = x->x_bufrd;
+        // add input to accumulator
+        x->x_accum = rmsaverage_rmssum(input, x->x_accum, 1);
+        x->x_calib = rmsaverage_rmssum(input, x->x_calib, 1);
+        unsigned int count = x->x_count;
+        if(count < npoints) {
+            // update count
+            count++;
+            x->x_count = count;
+        } else {
+            x->x_accum = rmsaverage_rmssum(x->x_buf[bufrd], x->x_accum, 0);
+        };
+
+        // overwrite/store current input value into buf
+        x->x_buf[bufrd] = input;
+
+        // calculate result
+        result = x->x_accum/(float)npoints;
+        result = sqrt(result);
+
+        // incrementation step
+        bufrd++;
+        if (bufrd >= npoints) {
+            bufrd = 0;
+            x->x_accum = x->x_calib;
+            x->x_calib = 0.0;
+        };
+        x->x_bufrd = bufrd;
+    } else {
+        result = fabs(input);
+    }
+    if (isnan(result))
+        result = input;
+
+    *outSample = result;
+    return 1;
+}
+
+int rmsaverage_init(rmsaverage *x, unsigned int pointCount) {
+    // default to stack for now...
+    x->x_buf = x->x_stack;
+    x->x_alloc = 0;
+    x->x_sz = AVERAGE_STACK;
+
+    //now allocate x_buf if necessary
+    rmsaverage_sz(x, x->x_npoints);
+
+    rmsaverage_reset(x);
+
+    x->x_npoints = pointCount;
+    return 1;
+}
+
+int rmsaverage_create(rmsaverage **x) {
+    *x = (rmsaverage *)malloc(sizeof(rmsaverage));
+    return 1;
+}
+
+int rmsaverage_destroy(rmsaverage **x) {
+    free(*x);
+    return 1;
+}
+// MARK: END Cyclone RMS
+
+// MARK: BEGIN Cyclone Slide
+typedef struct {
+    int x_slide_up;
+    int x_slide_down;
+    float x_last;
+} slide;
+
+int slide_compute(slide *x, float *inSample, float *outSample) {
+    float last = x->x_last;
+    float f = *inSample;
+    float output = 0.0;
+    if (f >= last) {
+        if (x->x_slide_up > 1.)
+            output = last + ((f - last) / x->x_slide_up);
+        else
+            output = last = f;
+    } else if (f < last) {
+        if (x->x_slide_down > 1)
+            output = last + ((f - last) / x->x_slide_down);
+        else
+            output = last = f;
+    }
+    if (output == last && output != f)
+        output = f;
+    if (isnan(output))
+        output = *inSample;
+
+    *outSample = output;
+    last = output;
+    x->x_last = last;
+    return 1;
+}
+
+void slide_reset(slide *x) {
+    x->x_last = 0;
+}
+
+void slide_slide_up(slide *x, float f) {
+    int i = (int)f;
+    if (i > 1) {
+        x->x_slide_up = i;
+    } else {
+        x->x_slide_up = 0;
+    }
+}
+
+void slide_slide_down(slide *x, float f) {
+    int i = (int)f;
+    if (i > 1) {
+        x->x_slide_down = i;
+    } else {
+        x->x_slide_down = 0;
+    }
+}
+
+int slide_init(slide *x, float slideUpSamples, float slideDownSamples) {
+    float f1 = slideUpSamples;
+    float f2 = slideDownSamples;
+    slide_slide_up(x, f1);
+    slide_slide_down(x, f2);
+    x->x_last = 0.;
+    return 1;
+}
+
+int slide_create(slide **x) {
+    *x = (slide *)malloc(sizeof(slide));
+    return 1;
+}
+
+int slide_destroy(slide **x) {
+    free(*x);
+    return 1;
+}
+// MARK: END Cyclone Slide
 #include "IntensifierUnit.h"
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 AUDIOCOMPONENT_ENTRY(AUBaseFactory, IntensifierUnit)
