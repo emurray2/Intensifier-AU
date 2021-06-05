@@ -5,6 +5,7 @@
 #endif
 #ifndef __IntensifierUnit_h__
 #define __IntensifierUnit_h__
+#include "AdjustableDelayLine.h"
 /*
  The objects marked Cyclone were derived from the Max/MSP Cyclone library source code.
  The license for this code can be found below:
@@ -67,7 +68,7 @@ typedef struct {
 static CFStringRef kParamName_Intensifier_Input_Amount = CFSTR ("Input Amount");
 static const float kDefaultValue_Intensifier_Input_Amount = 0.0;
 static const float kMinimumValue_Intensifier_Input_Amount = -60.0;
-static const float kMaximumValue_Intensifier_Input_Amount = 30.0;
+static const float kMaximumValue_Intensifier_Input_Amount = 15.0;
 
 static CFStringRef kParamName_Intensifier_Attack_Amount = CFSTR ("Attack Amount");
 static const float kDefaultValue_Intensifier_Attack_Amount = 0.0;
@@ -80,19 +81,19 @@ static const float kMinimumValue_Intensifier_Release_Amount = -60.0;
 static const float kMaximumValue_Intensifier_Release_Amount = 30.0;
 
 static CFStringRef kParamName_Intensifier_Attack_Time = CFSTR ("Attack Time");
-static const float kDefaultValue_Intensifier_Attack_Time = 0.0;
+static const float kDefaultValue_Intensifier_Attack_Time = 20.0;
 static const float kMinimumValue_Intensifier_Attack_Time = 0.0;
 static const float kMaximumValue_Intensifier_Attack_Time = 500.0;
 
 static CFStringRef kParamName_Intensifier_Release_Time = CFSTR ("Release Time");
-static const float kDefaultValue_Intensifier_Release_Time = 0.0;
+static const float kDefaultValue_Intensifier_Release_Time = 1.0;
 static const float kMinimumValue_Intensifier_Release_Time = 0.0;
 static const float kMaximumValue_Intensifier_Release_Time = 5.0;
 
 static CFStringRef kParamName_Intensifier_Output_Amount = CFSTR ("Output Amount");
 static const float kDefaultValue_Intensifier_Output_Amount = 0.0;
 static const float kMinimumValue_Intensifier_Output_Amount = -60.0;
-static const float kMaximumValue_Intensifier_Output_Amount = 30.0;
+static const float kMaximumValue_Intensifier_Output_Amount = 15.0;
 
 enum {
 	kParameter_Input_Amount	= 0,
@@ -129,16 +130,6 @@ static const int kPreset_Default = kPreset_Subtle;
 class IntensifierUnit : public AUEffectBase {
 
 public:
-    rmsaverage *leftRMSAverage1;
-    rmsaverage *rightRMSAverage1;
-    rmsaverage *leftRMSAverage2;
-    rmsaverage *rightRMSAverage2;
-    slide *leftAttackSlideUp;
-    slide *rightAttackSlideUp;
-    slide *leftAttackSlideDown;
-    slide *rightAttackSlideDown;
-    slide *leftReleaseSlideDown;
-    slide *rightReleaseSlideDown;
 	IntensifierUnit (AudioUnit component);
 
     virtual OSStatus Initialize();
@@ -196,6 +187,8 @@ protected:
 				UInt32			inNumChannels, // equal to 1
 				bool			&ioSilence
 		);
+
+        ~IntensifierUnitKernel();
 		
         virtual void Reset ();
 		
@@ -209,15 +202,36 @@ protected:
 			enum	{sampleLimit = (int) 10E6};	// To keep the value of mSamplesProcessed within a 
 												//   reasonable limit. 10E6 is equivalent to the number   
 												//   of samples in 100 seconds of 96 kHz audio.
+            rmsaverage *RMSAverage1;
+            rmsaverage *RMSAverage2;
+            slide *attackSlideUp;
+            slide *attackSlideDown;
+            slide *releaseSlideDown;
+            DunneCore::AdjustableDelayLine delay1;
+            void rmsaverage_zerobuf(rmsaverage *x);
+            void rmsaverage_reset(rmsaverage *x);
+            void rmsaverage_sz(rmsaverage *x, unsigned int newsz);
+            double rmsaverage_rmssum(float input, float accum, int add);
+            int rmsaverage_compute(rmsaverage *x, const float *inSample, float *outSample);
+            int rmsaverage_init(rmsaverage *x, unsigned int pointCount);
+            int rmsaverage_create(rmsaverage **x);
+            int rmsaverage_destroy(rmsaverage **x);
+            int slide_compute(slide *x, float *inSample, float *outSample);
+            void slide_reset(slide *x);
+            void slide_slide_up(slide *x, float f);
+            void slide_slide_down(slide *x, float f);
+            int slide_init(slide *x, float slideUpSamples, float slideDownSamples);
+            int slide_create(slide **x);
+            int slide_destroy(slide **x);
             float convertMsToSamples(float fMilleseconds, float fSampleRate);
             float convertMsToSeconds(float fMilleseconds);
             float convertSecondsToCutoffFrequency(float fSeconds);
-            int compute_attackLR(Float32 *inChannel,
+            int compute_attackLR(const Float32 *inChannel,
                                  Float32 *outChannel,
                                  rmsaverage *average,
                                  slide *slideUp,
                                  slide *slideDown);
-            int compute_releaseLR(Float32 *inChannel,
+            int compute_releaseLR(const Float32 *inChannel,
                                  Float32 *outChannel,
                                  rmsaverage *average,
                                  slide *slideDown);
